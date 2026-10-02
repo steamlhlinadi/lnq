@@ -44,8 +44,8 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+HEALTHCHECK --interval=30s --timeout=15s --start-period=45s --retries=5 \
+  CMD node -e "const req = require('http').get('http://127.0.0.1:3000/health', r => { r.resume(); r.on('end', () => process.exit(r.statusCode === 200 ? 0 : 1)); }); req.on('error', () => process.exit(1));"
 
 # Start application
 CMD ["pnpm", "start"]

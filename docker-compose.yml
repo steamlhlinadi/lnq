@@ -69,12 +69,12 @@ services:
           "CMD",
           "node",
           "-e",
-          "require('http').get('http://localhost:3000/health', r => { if (r.statusCode !== 200) process.exit(1) })",
+          "const req = require('http').get('http://127.0.0.1:3000/health', r => { r.resume(); r.on('end', () => process.exit(r.statusCode === 200 ? 0 : 1)); }); req.on('error', () => process.exit(1));",
         ]
       interval: 10s
-      timeout: 5s
+      timeout: 15s
       retries: 10
-      start_period: 15s
+      start_period: 45s
 
   frontend:
     build:
