@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:22-slim AS build
 
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@10.28.0 --activate
@@ -9,7 +9,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@10.28.0 --activate

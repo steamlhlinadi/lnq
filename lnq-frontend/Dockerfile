@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Base stage for dependencies
-FROM node:20-alpine AS base
+FROM node:20-slim AS base
 RUN corepack enable && corepack prepare pnpm@10.27.0 --activate
 WORKDIR /app
 
