@@ -1,0 +1,103 @@
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../l10n/strings.dart';
+
+class DateRangeFilter extends StatelessWidget {
+  final String activeFilter;
+  final DateTimeRange? createdDateRange;
+  final DateTimeRange? pickupDateRange;
+  final ValueChanged<String> onFilterChanged;
+  final ValueChanged<DateTimeRange?> onCreatedDateChanged;
+  final ValueChanged<DateTimeRange?> onPickupDateChanged;
+
+  const DateRangeFilter({
+    super.key,
+    required this.activeFilter,
+    required this.createdDateRange,
+    required this.pickupDateRange,
+    required this.onFilterChanged,
+    required this.onCreatedDateChanged,
+    required this.onPickupDateChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        ToggleButtons(
+          isSelected: [
+            activeFilter == 'createdDate',
+            activeFilter == 'pickupDate',
+          ],
+          onPressed: (index) {
+            onFilterChanged(index == 0 ? 'createdDate' : 'pickupDate');
+          },
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(AppStrings.trWatch(context, 'createdDate')),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(AppStrings.trWatch(context, 'pickupDateLabel')),
+            ),
+          ],
+        ),
+        const SizedBox(width: 8),
+        if (activeFilter == 'createdDate')
+          DateRangePickerButton(
+            dateRange: createdDateRange,
+            onDateChanged: onCreatedDateChanged,
+          ),
+        if (activeFilter == 'pickupDate')
+          DateRangePickerButton(
+            dateRange: pickupDateRange,
+            onDateChanged: onPickupDateChanged,
+          ),
+      ],
+    );
+  }
+}
+
+class DateRangePickerButton extends StatelessWidget {
+  final DateTimeRange? dateRange;
+  final ValueChanged<DateTimeRange?> onDateChanged;
+
+  const DateRangePickerButton({
+    super.key,
+    required this.dateRange,
+    required this.onDateChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        TextButton.icon(
+          icon: const Icon(Icons.date_range),
+          label: Text(
+            dateRange == null
+                ? 'All'
+                : '${DateFormat('MMM d').format(dateRange!.start)} - ${DateFormat('MMM d').format(dateRange!.end)}',
+          ),
+          onPressed: () async {
+            final now = DateTime.now();
+            final picked = await showDateRangePicker(
+              context: context,
+              firstDate: DateTime(now.year - 2),
+              lastDate: DateTime(now.year + 2),
+              initialDateRange: dateRange,
+            );
+            onDateChanged(picked);
+          },
+        ),
+        if (dateRange != null)
+          IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () => onDateChanged(null),
+          ),
+      ],
+    );
+  }
+}
