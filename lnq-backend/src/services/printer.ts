@@ -27,9 +27,23 @@ function pad2(value: number): string {
 
 function formatPrintDate(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
-  const mm = pad2(d.getMonth() + 1);
-  const dd = pad2(d.getDate());
-  return `${dd}/${mm}`;
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "Mei",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const day = d.getDate();
+  const month = monthNames[d.getMonth()];
+  return `${day} ${month}`;
 }
 
 // Adapted from your buildPrinterOutput(order: ParsedOrder)
